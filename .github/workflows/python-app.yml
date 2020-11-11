@@ -7,14 +7,12 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-
+  testing:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         python: [3.7, 3.8, 3.9]
-
+    name: Testing Python ${{ matrix.python }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -28,6 +26,11 @@ jobs:
     - name: Testing
       run: |
         tox -e py
+
+  linting:
+    runs-on: ubuntu-latest
+    name: Test Linting
+    steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -43,4 +46,3 @@ jobs:
     - name: Test typing
       run: |
         tox -e mypy
-
