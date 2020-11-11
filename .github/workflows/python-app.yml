@@ -30,7 +30,7 @@ jobs:
         pip install -r requirements_dev.txt
     - name: Testing
       run: |
-        tox -e $(tox.env)
+        tox -e py
     - name: Test linting
       run: |
         tox -e lint
