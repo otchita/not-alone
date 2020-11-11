@@ -199,7 +199,7 @@ class BoardType(Enum):
     """Enumerator of board type.
 
     - ``STACKED`` refers to the board where the Artemia spots are stacked
-    atthe end of the rescue alley.
+    at the end of the rescue alley.
 
     - ``ALTERNATING`` refers to the board where the Artemia spots are
     alternating with normal spots.
