@@ -29,7 +29,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements_dev.txt
     - name: Testing
-    - run: |
+      run: |
         tox -e $(tox.env)
     - name: Test linting
       run: |
