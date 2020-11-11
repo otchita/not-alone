@@ -1,4 +1,4 @@
-<center> <h1>Not Alone Board Game</h1> </center>
+-> # Not Alone Board Game <- 
 
 <p align="center">
   <img width="399" height="445" src="https://cf.geekdo-images.com/opengraph_left/img/Drj9OBhTZQBVFEUGo647-jZ4UZM=/fit-in/445x445/filters:strip_icc()/pic3611884.jpg">
