@@ -1,6 +1,5 @@
 <p align="center">
-  <h1>Not Alone Board Game</h1><br>
-  <br><br>
+  <h1>Not Alone Board Game</h1>
   <img src="https://cf.geekdo-images.com/opengraph_left/img/Drj9OBhTZQBVFEUGo647-jZ4UZM=/fit-in/445x445/filters:strip_icc()/pic3611884.jpg">
 </p>
 
