@@ -202,7 +202,7 @@ class BoardType(Enum):
     at the end of the rescue alley.
 
     - ``ALTERNATING`` refers to the board where the Artemia spots are
-    are alternating with normal spots.
+    alternating with normal spots.
     """
 
     STACKED = 1
