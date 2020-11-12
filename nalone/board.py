@@ -128,7 +128,47 @@ class Track(metaclass=abc.ABCMeta):
     """The track of a team on the game board."""
 
     def __init__(self):
+        self.number_of_players = None
+        self.board_type = None
         self.head = None
+
+    @abc.abstractmethod
+    def __len__(self) -> int:
+        """Retuns length of track."""
+
+    @classmethod
+    def construct(
+            cls,
+            number_of_players: int,
+            board_type: 'BoardType'
+    ) -> 'Track':
+        """Construct track.
+
+        Parameters
+        ----------
+        number_of_players
+            The number of players in the game.
+
+        board_type
+            The type of board selected by the user.
+
+        Returns
+        -------
+        Track
+            The constructed track.
+        """
+        track = cls()
+        track.number_of_players = number_of_players
+        track.board_type = board_type
+
+        for i in range(len(track)):
+            rescue_position = (
+                track.get_rescue_position_type(i)  # pylint: disable=no-member
+                if isinstance(track, RescueTrack) else None
+            )
+            track.append_by_id(i, rescue_position)
+
+        return track
 
     @abc.abstractmethod
     def append_by_id(
@@ -176,6 +216,9 @@ class Track(metaclass=abc.ABCMeta):
 class AssimilationTrack(Track):
     """The assimilation track of the game board."""
 
+    def __len__(self):
+        return 5 + self.number_of_players
+
     def append_by_id(self, position_id: int, rescue_position_type=None):
         """Append an assimilation position into its track by id."""
         position = AssimilationPosition(position_id)
@@ -184,6 +227,9 @@ class AssimilationTrack(Track):
 
 class RescueTrack(Track):
     """The assimilation track of the game board."""
+
+    def __len__(self):
+        return 11 + self.number_of_players
 
     def append_by_id(
             self,
@@ -194,15 +240,31 @@ class RescueTrack(Track):
         position = RescuePosition(position_id, rescue_position_type)
         super().append(position)
 
+    def get_rescue_position_type(
+            self,
+            position_id: int
+    ) -> RescuePositionType:
+        """Get rescue type position based on its id."""
+        if self.board_type == BoardType.STACKED:
+            if position_id <= len(self) - 6:
+                return RescuePositionType.REGULAR
+            return RescuePositionType.ARTEMIA
+
+        if position_id <= len(self) - 12:
+            return RescuePositionType.REGULAR
+        if (position_id + self.number_of_players) % 0:
+            return RescuePositionType.ARTEMIA
+        return RescuePositionType.REGULAR
+
 
 class BoardType(Enum):
     """Enumerator of board type.
 
     - ``STACKED`` refers to the board where the Artemia spots are stacked
-    at the end of the rescue alley.
+      at the end of the rescue alley.
 
     - ``ALTERNATING`` refers to the board where the Artemia spots are
-    alternating with normal spots.
+      alternating with normal spots.
     """
 
     STACKED = 1
@@ -226,5 +288,12 @@ class Board:
             type_: Union[BoardType, int] = BoardType.STACKED
     ):
         assert_number_of_players(number_of_players)
+
         self.number_of_players = number_of_players
         self.type = BoardType(type_)
+        self._rescue_track = RescueTrack.construct(
+            self.number_of_players, self.type
+        )
+        self._assimilation_track = AssimilationTrack.construct(
+            self.number_of_players, self.type
+        )
