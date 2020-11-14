@@ -1,9 +1,9 @@
 """Unit tests for :mod:`nalone.board`."""
 import pytest
 
-from nalone.board import (AssimilationPosition, AssimilationTrack, BoardType,
-                          NumberOfPlayersError, PositionError, RescuePosition,
-                          RescuePositionType, RescueTrack,
+from nalone.board import (AssimilationPosition, AssimilationTrack, Board,
+                          BoardType, NumberOfPlayersError, PositionError,
+                          RescuePosition, RescuePositionType, RescueTrack,
                           assert_number_of_players)
 
 
@@ -45,7 +45,6 @@ def test_position_equality():
     pos6.next = pos3
     pos7 = RescuePosition(3, RescuePositionType.ARTEMIA)
     pos7.next = pos4
-    pos7.previous = pos1
     pos8 = RescuePosition(3, RescuePositionType.ARTEMIA)
     pos8.next = pos5
 
@@ -53,7 +52,7 @@ def test_position_equality():
     assert pos3 == pos4
     assert pos1 != pos2
     assert pos3 != pos5
-    assert pos6 != pos7
+    assert pos6 == pos7
     assert pos6 != pos8
 
 
@@ -105,3 +104,16 @@ def test_track_construction_alternating_board(number_of_players):
         else:
             expected.append_by_id(i, RescuePositionType.REGULAR)
     assert track == expected
+
+
+def test_board_initialization():
+    """Test :class:`nalone.board.Board`."""
+    number_of_players = 4
+    board_type = BoardType.STACKED
+    board = Board(number_of_players, board_type)
+
+    assert isinstance(board, Board)
+    assert board.number_of_players == number_of_players
+    assert board.type == board_type
+    assert board.assimilation_track_length == 9
+    assert board.rescue_track_length == 15

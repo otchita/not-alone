@@ -319,3 +319,13 @@ class Board:
         self._assimilation_track = AssimilationTrack.construct(
             self.number_of_players, self.type
         )
+
+    @property
+    def rescue_track_length(self):
+        """Get the length of the rescure track."""
+        return len(self._rescue_track)
+
+    @property
+    def assimilation_track_length(self):
+        """Get the length of the assimilation track."""
+        return len(self._assimilation_track)
