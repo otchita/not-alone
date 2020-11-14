@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union
 from enum import Enum
 
 
-class NumberOfPlayerError(ValueError):
+class NumberOfPlayersError(ValueError):
     """Exception raised when the number of given players is invalid.
 
     Parameters
@@ -37,7 +37,7 @@ def assert_number_of_players(number_of_players: int):
         The number of players given.
     """
     if not 2 <= number_of_players <= 7:
-        raise NumberOfPlayerError(number_of_players)
+        raise NumberOfPlayersError(number_of_players)
 
 
 class PositionError(ValueError):
@@ -90,6 +90,14 @@ class Position(metaclass=abc.ABCMeta):
         self.next = None
         self.previous = None
 
+    def __hash__(self):
+        return hash((self.value, self.next))
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, self.__class__):
+            return hash(self) == hash(other)
+        return False
+
 
 class AssimilationPosition(Position):
     """An assimilation position on the board."""
@@ -105,6 +113,9 @@ class RescuePositionType(Enum):
 
     REGULAR = 0
     ARTEMIA = 1
+
+    def __hash__(self):
+        return hash((self.value,))
 
 
 class RescuePosition(Position):
@@ -123,6 +134,9 @@ class RescuePosition(Position):
         super().__init__(value)
         self.type = RescuePositionType(type_)
 
+    def __hash__(self):
+        return hash((self.value, self.next, self.type))
+
 
 class Track(metaclass=abc.ABCMeta):
     """The track of a team on the game board."""
@@ -131,6 +145,14 @@ class Track(metaclass=abc.ABCMeta):
         self.number_of_players = None
         self.board_type = None
         self.head = None
+
+    def __hash__(self):
+        return hash((self.number_of_players, self.board_type, self.head))
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, self.__class__):
+            return hash(self) == hash(other)
+        return False
 
     @abc.abstractmethod
     def __len__(self) -> int:
@@ -246,13 +268,13 @@ class RescueTrack(Track):
     ) -> RescuePositionType:
         """Get rescue type position based on its id."""
         if self.board_type == BoardType.STACKED:
-            if position_id <= len(self) - 6:
+            if position_id < len(self) - 6:
                 return RescuePositionType.REGULAR
             return RescuePositionType.ARTEMIA
 
-        if position_id <= len(self) - 12:
+        if position_id < len(self) - 12:
             return RescuePositionType.REGULAR
-        if (position_id + self.number_of_players) % 0:
+        if (position_id + self.number_of_players) % 2 == 0:
             return RescuePositionType.ARTEMIA
         return RescuePositionType.REGULAR
 
